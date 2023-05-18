@@ -361,6 +361,8 @@ void PlayScene::ReadMap() {
 	}
 }
 void PlayScene::ReadEnemyWave() {
+	// If you don't want to crash at stage2
+	// modify your map filename
 	std::string filename = std::string("resources/enemy") + std::to_string(MapId) + " copy.txt";
 	// Read enemy file.
 	float type, wait, repeat;
