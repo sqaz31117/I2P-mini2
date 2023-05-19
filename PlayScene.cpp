@@ -229,7 +229,7 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 	const int x = mx / BlockSize;
 	const int y = my / BlockSize;
 	if (button & 1) {
-		if (mapState[y][x] != TILE_OCCUPIED) {
+		if (mapState[y][x] != TILE_OCCUPIED && mapState[y][x] != TILE_UPGRADE) {
 			if (!preview)
 				return;
 			// Check if valid.
@@ -259,17 +259,27 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 			mapState[y][x] = TILE_OCCUPIED;
 			OnMouseMove(mx, my);
 		}
-		else if (mapState[y][x] == TILE_OCCUPIED) {
+		else if (mapState[y][x] == TILE_OCCUPIED && mapState[y][x] != TILE_UPGRADE) {
 			// mini2 TODO 2
 			// Ref UIBtnClicked()
 			if (preview->GetPrice() == 40) {
 				EarnMoney(-preview->GetPrice());
 				preview->GetObjectIterator()->first = false;
 				UIGroup->RemoveObject(preview->GetObjectIterator());
+				// TowerGroup->RemoveObject(objectIterator);
+				// std::cout << preview->GetObjectIterator()->second->;
+				int tmp_x = x * BlockSize + BlockSize / 2;
+				int tmp_y = y * BlockSize + BlockSize / 2;
+
+				for (auto& it : TowerGroup->GetObjects()) {
+					if (it->Position.x == tmp_x && it->Position.y == tmp_y) {
+						TowerGroup->RemoveObject(it->GetObjectIterator());
+					}
+				}
 				preview = nullptr;
 				preview = new PlugGunTurret2(0, 0);
-				preview->Position.x = x * BlockSize + BlockSize / 2;
-				preview->Position.y = y * BlockSize + BlockSize / 2;
+				preview->Position.x = tmp_x;
+				preview->Position.y = tmp_y;
 				preview->Enabled = true;
 				preview->Preview = false;
 				preview->Tint = al_map_rgba(255, 255, 255, 255);
@@ -277,10 +287,11 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 				preview->Update(0);
 				// Remove Preview.
 				preview = nullptr;
-				
-				mapState[y][x] = TILE_OCCUPIED;
+
+				mapState[y][x] = TILE_UPGRADE;
+				// std::cout << "test\n";
 				OnMouseMove(mx, my);
-			}
+			} 
 		}
 	}
 }
