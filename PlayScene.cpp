@@ -163,6 +163,7 @@ void PlayScene::Update(float deltaTime) {
 		switch (current.first) {
 		case 1:
 			EnemyGroup->AddNewObject(enemy = new RedNormalEnemy(SpawnCoordinate.x, SpawnCoordinate.y));
+			// std::cout << SpawnCoordinate.x << " " << SpawnCoordinate.y << std::endl;
 			break;
 		// TODO 2 (2/3): You need to modify 'resources/enemy1.txt', or 'resources/enemy2.txt' to spawn the new enemy.
 		// The format is "[EnemyId] [TimeDelay] [Repeat]".
@@ -200,7 +201,9 @@ void PlayScene::Draw() const {
 	}
 }
 void PlayScene::OnMouseDown(int button, int mx, int my) {
+	// std::cout << "mouse down\n";
 	if ((button & 1) && !imgTarget->Visible && preview) {
+		// std::cout << "invalid pos\n";
 		// Cancel turret construct.
 		UIGroup->RemoveObject(preview->GetObjectIterator());
 		preview = nullptr;
@@ -255,6 +258,29 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 
 			mapState[y][x] = TILE_OCCUPIED;
 			OnMouseMove(mx, my);
+		}
+		else if (mapState[y][x] == TILE_OCCUPIED) {
+			// mini2 TODO 2
+			// Ref UIBtnClicked()
+			if (preview->GetPrice() == 40) {
+				EarnMoney(-preview->GetPrice());
+				preview->GetObjectIterator()->first = false;
+				UIGroup->RemoveObject(preview->GetObjectIterator());
+				preview = nullptr;
+				preview = new PlugGunTurret2(0, 0);
+				preview->Position.x = x * BlockSize + BlockSize / 2;
+				preview->Position.y = y * BlockSize + BlockSize / 2;
+				preview->Enabled = true;
+				preview->Preview = false;
+				preview->Tint = al_map_rgba(255, 255, 255, 255);
+				TowerGroup->AddNewObject(preview);
+				preview->Update(0);
+				// Remove Preview.
+				preview = nullptr;
+				
+				mapState[y][x] = TILE_OCCUPIED;
+				OnMouseMove(mx, my);
+			}
 		}
 	}
 }
@@ -384,6 +410,8 @@ void PlayScene::ConstructUI() {
 	// Buttons
 	ConstructButton(0, "play/turret-6.png", PlugGunTurret::Price);
 	ConstructButton(1, "play/turret-1.png", PlugGunTurret2::Price);
+	// mini2
+	// ConstructButton(2, "play/turret-1.png", PlugGunTurret2::Price);
 	// TODO 3 (3/5): Create a button to support constructing the new turret.
     
 	int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
@@ -416,8 +444,9 @@ void PlayScene::UIBtnClicked(int id) {
 	if (id == 1 && money >= PlugGunTurret2::Price) 
 		preview = new PlugGunTurret2(0, 0);
 
-	if (!preview)
+	if (!preview) {
 		return;
+	}
 	preview->Position = Engine::GameEngine::GetInstance().GetMousePosition();
 	preview->Tint = al_map_rgba(255, 255, 255, 200);
 	preview->Enabled = false;
