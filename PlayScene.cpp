@@ -24,6 +24,7 @@
 // Enemy
 #include "RedNormalEnemy.hpp"
 #include "GreenNormalEnemy.hpp"
+#include "DiceTwoEnemy.hpp"
 #include "PlayScene.hpp"
 #include "Resources.hpp"
 #include "Sprite.hpp"
@@ -165,12 +166,18 @@ void PlayScene::Update(float deltaTime) {
 		case 1:
 			EnemyGroup->AddNewObject(enemy = new RedNormalEnemy(SpawnCoordinate.x, SpawnCoordinate.y));
 			// std::cout << SpawnCoordinate.x << " " << SpawnCoordinate.y << std::endl;
+			std::cout << "Red\n";
 			break;
 		// TODO 2 (2/3): You need to modify 'resources/enemy1.txt', or 'resources/enemy2.txt' to spawn the new enemy.
 		// The format is "[EnemyId] [TimeDelay] [Repeat]".
 		// TODO 2 (3/3): Enable the creation of the new enemy.
 		case 2:
 			EnemyGroup->AddNewObject(enemy = new GreenNormalEnemy(SpawnCoordinate.x, SpawnCoordinate.y));
+			std::cout << "Dice\n";
+			break;
+		case 3:
+			EnemyGroup->AddNewObject(enemy = new DiceTwoEnemy(SpawnCoordinate.x, SpawnCoordinate.y));
+			std::cout << "Dice two\n";
 			break;
 		default:
 			continue;
@@ -401,7 +408,7 @@ void PlayScene::ReadMap() {
 void PlayScene::ReadEnemyWave() {
 	// If you don't want to crash at stage2
 	// modify your map filename
-	std::string filename = std::string("resources/enemy") + std::to_string(MapId) + " copy.txt";
+	std::string filename = std::string("resources/enemy") + std::to_string(MapId) + ".txt";
 	// Read enemy file.
 	float type, wait, repeat;
 	enemyWaveData.clear();

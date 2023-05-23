@@ -17,7 +17,7 @@
 #include "PlayScene.hpp"
 #include "Turret.hpp"
 
-#include "RedNormalEnemy.hpp"
+#include "GreenNormalEnemy.hpp"
 
 PlayScene* Enemy::getPlayScene() {
 	return dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetActiveScene());
@@ -40,6 +40,7 @@ Enemy::Enemy(std::string img, float x, float y, float radius, float speed, float
 }
 void Enemy::Hit(float damage) {
 	hp -= damage;
+	std::cout << Position.x << " " << Position.y << std::endl;
 	if (hp <= 0) {
 		OnExplode();
 		// Remove all turret's reference to target.
@@ -50,8 +51,16 @@ void Enemy::Hit(float damage) {
 		getPlayScene()->EarnMoney(money);
 		getPlayScene()->EnemyGroup->RemoveObject(objectIterator);
 		AudioHelper::PlayAudio("explosion.wav");
-
-
+		if (money == 7) {
+			Enemy* enemy;
+			getPlayScene()->EnemyGroup->AddNewObject(enemy = new GreenNormalEnemy(Position.x, Position.y));
+			// std::cout << "Born: " << Position.x << " " << Position.y << std::endl;
+			enemy->UpdatePath(getPlayScene()->mapDistance);
+			enemy->Update(0);
+			// enemy->UpdatePath(mapDistance);
+			// // Compensate the time lost.
+			// enemy->Update(ticks);
+		}
 		// Enemy* enemy;
 		// getPlayScene()->EnemyGroup->AddNewObject(enemy = new RedNormalEnemy(Position.x, Position.y));
 	}
