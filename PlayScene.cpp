@@ -19,6 +19,7 @@
 // Turret
 #include "PlugGunTurret.hpp"
 #include "PlugGunTurret2.hpp"
+#include "PlugGunTurret3.hpp"
 #include "Plane.hpp"
 // Enemy
 #include "RedNormalEnemy.hpp"
@@ -277,7 +278,7 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 					}
 				}
 				preview = nullptr;
-				preview = new PlugGunTurret2(0, 0);
+				preview = new PlugGunTurret3(x, y);
 				preview->Position.x = tmp_x;
 				preview->Position.y = tmp_y;
 				preview->Enabled = true;

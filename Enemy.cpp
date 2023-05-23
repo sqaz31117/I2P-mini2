@@ -17,6 +17,8 @@
 #include "PlayScene.hpp"
 #include "Turret.hpp"
 
+#include "RedNormalEnemy.hpp"
+
 PlayScene* Enemy::getPlayScene() {
 	return dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetActiveScene());
 }
@@ -48,6 +50,10 @@ void Enemy::Hit(float damage) {
 		getPlayScene()->EarnMoney(money);
 		getPlayScene()->EnemyGroup->RemoveObject(objectIterator);
 		AudioHelper::PlayAudio("explosion.wav");
+
+
+		// Enemy* enemy;
+		// getPlayScene()->EnemyGroup->AddNewObject(enemy = new RedNormalEnemy(Position.x, Position.y));
 	}
 }
 void Enemy::UpdatePath(const std::vector<std::vector<int>>& mapDistance) {
