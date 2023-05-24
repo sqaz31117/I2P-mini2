@@ -20,6 +20,7 @@
 #include "PlugGunTurret.hpp"
 #include "PlugGunTurret2.hpp"
 #include "PlugGunTurret3.hpp"
+#include "ShovelTurret.hpp"
 #include "Plane.hpp"
 // Enemy
 #include "RedNormalEnemy.hpp"
@@ -237,41 +238,107 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 	const int x = mx / BlockSize;
 	const int y = my / BlockSize;
 	if (button & 1) {
-		if (mapState[y][x] != TILE_OCCUPIED && mapState[y][x] != TILE_UPGRADE) {
-			if (!preview)
-				return;
-			// Check if valid.
-			if (!CheckSpaceValid(x, y)) {
-				Engine::Sprite* sprite;
-				GroundEffectGroup->AddNewObject(sprite = new DirtyEffect("play/target-invalid.png", 1, x * BlockSize + BlockSize / 2, y * BlockSize + BlockSize / 2));
-				sprite->Rotation = 0;
-				return;
-			}
-			// Purchase.
-			EarnMoney(-preview->GetPrice());
-			// Remove Preview.
-			preview->GetObjectIterator()->first = false;
-			UIGroup->RemoveObject(preview->GetObjectIterator());
-			// Construct real turret.
-			preview->Position.x = x * BlockSize + BlockSize / 2;
-			preview->Position.y = y * BlockSize + BlockSize / 2;
-			preview->Enabled = true;
-			preview->Preview = false;
-			preview->Tint = al_map_rgba(255, 255, 255, 255);
-			TowerGroup->AddNewObject(preview);
-			// To keep responding when paused.
-			preview->Update(0);
-			// Remove Preview.
-			preview = nullptr;
+		if (mapState[y][x] != TILE_UPGRADE) {
+			if (mapState[y][x] != TILE_OCCUPIED) {
+				if (!preview)
+					return;
+				// Check if valid.
+				if (!CheckSpaceValid(x, y)) {
+					Engine::Sprite* sprite;
+					GroundEffectGroup->AddNewObject(sprite = new DirtyEffect("play/target-invalid.png", 1, x * BlockSize + BlockSize / 2, y * BlockSize + BlockSize / 2));
+					sprite->Rotation = 0;
+					return;
+				}
+				// Purchase.
+				if (preview->GetPrice() > 0) {
+					EarnMoney(-preview->GetPrice());
+					// Remove Preview.
+					preview->GetObjectIterator()->first = false;
+					UIGroup->RemoveObject(preview->GetObjectIterator());
+					// Construct real turret.
+					preview->Position.x = x * BlockSize + BlockSize / 2;
+					preview->Position.y = y * BlockSize + BlockSize / 2;
+					preview->Enabled = true;
+					preview->Preview = false;
+					preview->Tint = al_map_rgba(255, 255, 255, 255);
+					TowerGroup->AddNewObject(preview);
+					// To keep responding when paused.
+					preview->Update(0);
+					// Remove Preview.
+					preview = nullptr;
 
-			mapState[y][x] = TILE_OCCUPIED;
-			OnMouseMove(mx, my);
+					mapState[y][x] = TILE_OCCUPIED;
+					OnMouseMove(mx, my);
+				}
+			}
+			else {
+				if (preview->GetPrice() == 40) {
+					EarnMoney(-preview->GetPrice());
+					preview->GetObjectIterator()->first = false;
+					UIGroup->RemoveObject(preview->GetObjectIterator());
+					// TowerGroup->RemoveObject(objectIterator);
+					// std::cout << preview->GetObjectIterator()->second->;
+					int tmp_x = x * BlockSize + BlockSize / 2;
+					int tmp_y = y * BlockSize + BlockSize / 2;
+
+					for (auto& it : TowerGroup->GetObjects()) {
+						if (it->Position.x == tmp_x && it->Position.y == tmp_y) {
+							TowerGroup->RemoveObject(it->GetObjectIterator());
+							break;
+						}
+					}
+					preview = nullptr;
+					preview = new PlugGunTurret3(x, y);
+					preview->Position.x = tmp_x;
+					preview->Position.y = tmp_y;
+					preview->Enabled = true;
+					preview->Preview = false;
+					preview->Tint = al_map_rgba(255, 255, 255, 255);
+					TowerGroup->AddNewObject(preview);
+					preview->Update(0);
+					// Remove Preview.
+					preview = nullptr;
+
+					mapState[y][x] = TILE_UPGRADE;
+					// std::cout << "test\n";
+					OnMouseMove(mx, my);
+				} 
+				else if (preview->GetPrice() == 0) {
+					EarnMoney(20);
+					preview->GetObjectIterator()->first = false;
+					UIGroup->RemoveObject(preview->GetObjectIterator());
+					// TowerGroup->RemoveObject(objectIterator);
+					// std::cout << preview->GetObjectIterator()->second->;
+					int tmp_x = x * BlockSize + BlockSize / 2;
+					int tmp_y = y * BlockSize + BlockSize / 2;
+
+					for (auto& it : TowerGroup->GetObjects()) {
+						if (it->Position.x == tmp_x && it->Position.y == tmp_y) {
+							TowerGroup->RemoveObject(it->GetObjectIterator());
+							break;
+						}
+					}
+					preview = nullptr;
+					preview = new PlugGunTurret3(x, y);
+					preview->Position.x = tmp_x;
+					preview->Position.y = tmp_y;
+					preview->Enabled = true;
+					preview->Preview = false;
+					preview->Tint = al_map_rgba(255, 255, 255, 255);
+					// TowerGroup->AddNewObject(preview);
+					preview->Update(0);
+					// Remove Preview.
+					preview = nullptr;
+
+					mapState[y][x] = TILE_FLOOR;
+					// std::cout << "test\n";
+					OnMouseMove(mx, my);
+				}
+			}
 		}
-		else if (mapState[y][x] == TILE_OCCUPIED && mapState[y][x] != TILE_UPGRADE) {
-			// mini2 TODO 2
-			// Ref UIBtnClicked()
-			if (preview->GetPrice() == 40) {
-				EarnMoney(-preview->GetPrice());
+		else {
+			if (preview->GetPrice() == 0) {
+				EarnMoney(20);
 				preview->GetObjectIterator()->first = false;
 				UIGroup->RemoveObject(preview->GetObjectIterator());
 				// TowerGroup->RemoveObject(objectIterator);
@@ -282,6 +349,7 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 				for (auto& it : TowerGroup->GetObjects()) {
 					if (it->Position.x == tmp_x && it->Position.y == tmp_y) {
 						TowerGroup->RemoveObject(it->GetObjectIterator());
+						break;
 					}
 				}
 				preview = nullptr;
@@ -291,15 +359,15 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 				preview->Enabled = true;
 				preview->Preview = false;
 				preview->Tint = al_map_rgba(255, 255, 255, 255);
-				TowerGroup->AddNewObject(preview);
+				// TowerGroup->AddNewObject(preview);
 				preview->Update(0);
 				// Remove Preview.
 				preview = nullptr;
 
-				mapState[y][x] = TILE_UPGRADE;
+				mapState[y][x] = TILE_FLOOR;
 				// std::cout << "test\n";
 				OnMouseMove(mx, my);
-			} 
+			}
 		}
 	}
 }
@@ -429,6 +497,7 @@ void PlayScene::ConstructUI() {
 	// Buttons
 	ConstructButton(0, "play/turret-6.png", PlugGunTurret::Price);
 	ConstructButton(1, "play/turret-1.png", PlugGunTurret2::Price);
+	ConstructButton(2, "play/turret-6.png", ShovelTurret::Price);
 	// mini2
 	// ConstructButton(2, "play/turret-1.png", PlugGunTurret2::Price);
 	// TODO 3 (3/5): Create a button to support constructing the new turret.
@@ -462,6 +531,8 @@ void PlayScene::UIBtnClicked(int id) {
 	// TODO 3 (4/5): On the new turret button callback, create the new turret.
 	if (id == 1 && money >= PlugGunTurret2::Price) 
 		preview = new PlugGunTurret2(0, 0);
+	if (id == 2 && money >= ShovelTurret::Price) 
+		preview = new ShovelTurret(0, 0);
 
 	if (!preview) {
 		return;

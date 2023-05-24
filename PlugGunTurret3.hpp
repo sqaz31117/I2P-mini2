@@ -1,5 +1,5 @@
-#ifndef UPGRADEGUNTURRET_H_INCLUDED
-#define UPGRADEGUNTURRET_H_INCLUDED
+#ifndef PlugGunTurret3_H_INCLUDED
+#define PlugGunTurret3_H_INCLUDED
 #include "Turret.hpp"
 
 class PlugGunTurret3 : public Turret {
@@ -10,4 +10,4 @@ public:
 };
 
 
-#endif // UPGRADEGUNTURRET_H_INCLUDED
+#endif // PlugGunTurret3_H_INCLUDED
