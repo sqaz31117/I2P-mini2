@@ -20,6 +20,7 @@
 #include "PlugGunTurret.hpp"
 #include "PlugGunTurret2.hpp"
 #include "PlugGunTurret3.hpp"
+#include "CircularTurret.hpp"
 #include "ShovelTurret.hpp"
 #include "ShifterTurret.hpp"
 #include "Plane.hpp"
@@ -263,6 +264,9 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 				else if (preview->GetPrice() == 80) {
 					MapTowerID[y][x] = 2;
 				}
+				else if (preview->GetPrice() == 50) {
+					MapTowerID[y][x] = 3;
+				}
 
 				if(!shift) EarnMoney(-preview->GetPrice());
 				shift = false;
@@ -298,6 +302,10 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 				if (MapTowerID[y][x] == 2) {
 					EarnMoney(40);
 				}
+				if (MapTowerID[y][x] == 3) {
+					EarnMoney(25);
+				}
+				
 				preview->GetObjectIterator()->first = false;
 				UIGroup->RemoveObject(preview->GetObjectIterator());
 				// TowerGroup->RemoveObject(objectIterator);
@@ -307,7 +315,8 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 
 				for (auto& it : TowerGroup->GetObjects()) {
 					if (it->Position.x == tmp_x && it->Position.y == tmp_y) {
-						TowerGroup->RemoveObject(it->GetObjectIterator());
+						it->GetObjectIterator()->first = false;
+						UIGroup->RemoveObject(it->GetObjectIterator());
 						break;
 					}
 				}
@@ -342,7 +351,8 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 
 				for (auto& it : TowerGroup->GetObjects()) {
 					if (it->Position.x == tmp_x && it->Position.y == tmp_y) {
-						TowerGroup->RemoveObject(it->GetObjectIterator());
+						it->GetObjectIterator()->first = false;
+						UIGroup->RemoveObject(it->GetObjectIterator());
 						break;
 					}
 				}
@@ -358,6 +368,9 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 				}
 				else if (tmp == 2) {
 					preview = new PlugGunTurret3(x, y);
+				}
+				else if (tmp == 3) {
+					preview = new CircularTurret(x, y);
 				}
 				preview->Position = Engine::GameEngine::GetInstance().GetMousePosition();
 				preview->Enabled = false;
@@ -378,7 +391,8 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 
 				for (auto& it : TowerGroup->GetObjects()) {
 					if (it->Position.x == tmp_x && it->Position.y == tmp_y) {
-						TowerGroup->RemoveObject(it->GetObjectIterator());
+						it->GetObjectIterator()->first = false;
+						UIGroup->RemoveObject(it->GetObjectIterator());
 						break;
 					}
 				}
@@ -529,7 +543,7 @@ void PlayScene::ConstructUI() {
 	// Buttons
 	ConstructButton(0, "play/turret-6.png", PlugGunTurret::Price);
 	ConstructButton(1, "play/turret-1.png", PlugGunTurret2::Price);
-	// ConstructButton(2, "play/target-invalid.png", CircularTurret::Price);
+	ConstructButton(2, "play/turret-3.png", CircularTurret::Price);
 	ConstructButton(3, "play/target-invalid.png", ShovelTurret::Price);
 	ConstructButton(4, "play/shoot-4.png", ShifterTurret::Price);
 	// mini2
@@ -577,6 +591,8 @@ void PlayScene::UIBtnClicked(int id) {
 	// TODO 3 (4/5): On the new turret button callback, create the new turret.
 	if (id == 1 && money >= PlugGunTurret2::Price) 
 		preview = new PlugGunTurret2(0, 0);
+	if (id == 2 && money >= PlugGunTurret2::Price) 
+		preview = new CircularTurret(0, 0);
 	if (id == 3 && money >= ShovelTurret::Price) 
 		preview = new ShovelTurret(0, 0);
 	if (id == 4 && money >= ShifterTurret::Price) 
