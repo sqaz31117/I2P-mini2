@@ -5,19 +5,19 @@
 #include "AudioHelper.hpp"
 #include "WoodBullet.hpp"
 #include "Group.hpp"
-#include "ShovelTurret.hpp"
+#include "ShifterTurret.hpp"
 #include "PlayScene.hpp"
 #include "Point.hpp"
 #include "ShootEffect.hpp"
 
-const int ShovelTurret::Price = 0;
-ShovelTurret::ShovelTurret(float x, float y) :
+const int ShifterTurret::Price = -1;
+ShifterTurret::ShifterTurret(float x, float y) :
     // TODO 3 (1/5): You can imitate the 2 files: 'PlugGunTurret.hpp', 'PlugGunTurret.cpp' to create a new turret.
-    Turret("play/tower-base.png", "play/target-invalid.png", x, y, 200, Price, 1.5) {
+    Turret("play/tower-base.png", "play/shoot-4.png", x, y, 200, Price, 1.5) {
     // Move center downward, since we the turret head is slightly biased upward
     Anchor.y += 8.0f / GetBitmapHeight();
 }
-void ShovelTurret::CreateBullet() {
+void ShifterTurret::CreateBullet() {
     Engine::Point diff = Engine::Point(cos(Rotation - ALLEGRO_PI / 2), sin(Rotation - ALLEGRO_PI / 2));
     float rotation = atan2(diff.y, diff.x);
     Engine::Point normalized = diff.Normalize();

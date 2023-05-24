@@ -34,6 +34,8 @@ protected:
 	int SpeedMult;
 public:
 	static bool DebugMode;
+	static bool shift;
+	static int MapTowerID[13][20];
 	static const std::vector<Engine::Point> directions;
 	static const int MapWidth, MapHeight;
 	static const int BlockSize;
