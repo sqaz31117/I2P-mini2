@@ -101,6 +101,8 @@ void Enemy::UpdatePath(const std::vector<std::vector<int>>& mapDistance) {
 void Enemy::Update(float deltaTime) {
 	// Slow effect.
 	SlowEffect(deltaTime);
+	// ALLEGRO_COLOR color = al_map_rgb(255, 0, 0);
+	// al_draw_rectangle(100.0, 100.0, 300.0, 200.0, color, 2.0); 
 	// Pre-calculate the velocity.
 	float remainSpeed = speed * deltaTime;
 	while (remainSpeed != 0) {
@@ -135,6 +137,21 @@ void Enemy::Update(float deltaTime) {
 }
 void Enemy::Draw() const {
 	Sprite::Draw();
+	ALLEGRO_COLOR color_b = al_map_rgb(0, 0, 0);
+	ALLEGRO_COLOR color_g = al_map_rgb(0, 255, 0);
+	float tmp = this->hp / 100 * 40;
+	if (this->money == 5) {
+		tmp = this->hp / 7 * 40;
+	}
+	else if (this->money == 6) {
+		tmp = this->hp / 10 * 40;
+	}
+	else if (this->money == 7) {
+		tmp = this->hp / 8 * 40;
+	}
+	
+	al_draw_filled_rectangle(Position.x - 20, Position.y - 27, Position.x - 20 + tmp, Position.y - 30, color_g);
+	al_draw_rectangle(Position.x - 20, Position.y - 27, Position.x + 20, Position.y - 30, color_b, 1.0); 
 	if (PlayScene::DebugMode) {
 		// Draw collision radius.
 		al_draw_circle(Position.x, Position.y, CollisionRadius, al_map_rgb(255, 0, 0), 2);

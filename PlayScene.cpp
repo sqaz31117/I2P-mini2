@@ -1,4 +1,5 @@
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_primitives.h>
 #include <algorithm>
 #include <cmath>
 #include <fstream>
@@ -420,8 +421,8 @@ void PlayScene::OnKeyDown(int keyCode) {
 	IScene::OnKeyDown(keyCode);
 	if (keyCode == ALLEGRO_KEY_TAB) {
 		// TODO 5 (1/3): Set Tab as a code to active / de-active the debug mode.
-		debug_mode = !debug_mode;
-		if(debug_mode) printf("debug_mode ON");
+		if (DebugMode == true) DebugMode = false;
+		else DebugMode = true;
 	}
 	else {
 		keyStrokes.push_back(keyCode);
