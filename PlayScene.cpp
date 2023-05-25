@@ -441,7 +441,7 @@ void PlayScene::OnKeyDown(int keyCode) {
 				}
 			}
 
-			if(!check && debug_mode){
+			if(!check){
 				EffectGroup->AddNewObject(new Plane());
 				money += 10000;
 			}
@@ -592,7 +592,7 @@ void PlayScene::UIBtnClicked(int id) {
 	// TODO 3 (4/5): On the new turret button callback, create the new turret.
 	if (id == 1 && money >= PlugGunTurret2::Price) 
 		preview = new PlugGunTurret2(0, 0);
-	if (id == 2 && money >= PlugGunTurret2::Price) 
+	if (id == 2 && money >= CircularTurret::Price) 
 		preview = new CircularTurret(0, 0);
 	if (id == 3 && money >= ShovelTurret::Price) 
 		preview = new ShovelTurret(0, 0);
